@@ -4,12 +4,12 @@
 #include "Triangle.h"
 #include "VecList.h"
 #include "Matrix.h"
+
 //ToDo: triangle.getCentre
 //ToDo: tirangle.getCcCentre
 //ToDo: trignagle.getCcRadius
 //ToDo: triangle.isWithinCc(point)
 //ToDo: triangle.area()
-
 
 
 using namespace std;
@@ -44,10 +44,6 @@ int main(int argc, char *argv[]) {
     //ToDo: Delaunay Check
     //if arguments.delaunay == true
         //for tris in triangles {check isDelaunay()}
-            //ToDo: triangle.getCentre
-            //ToDo: tirangle.getCcCentre
-            //ToDo: trignagle.getCcRadius
-            //toDo: triangle.isWithinCc( point)
 
     //ToDo: Integration
     //switch(arguments.integrationType){
