@@ -32,11 +32,11 @@ void vecList<Vec3>::insVertext(int index, Vec3 vertex) {
 }
 
 Vec3* vecList<Vec3>::getVertex(int index) {
-    return &vertexList.at(index);
+    return &vertexList[index];
 }
 
-std::vector<Vec3> vecList<Vec3>::getAllVertices() {
-    return vertexList;
+std::vector<Vec3>* vecList<Vec3>::getAllVertices() {
+    return &vertexList;
 }
 
 //ToDo: finding algorithm
@@ -71,13 +71,34 @@ void vecList<Triangle>::insTriangle(int index, Triangle tri) {
 }
 
 Triangle vecList<Triangle>::getTriangle(int index) {
-    return triangleList.at(index);
+    return triangleList[index];
 }
 
-std::vector<Triangle> vecList<Triangle>::getAllTriangles() {
-    return triangleList;
+std::vector<Triangle>* vecList<Triangle>::getAllTriangles() {
+    return &triangleList;
 }
 
-//ToDo: delaunay loop
+double vecList<Triangle>::integrateLinear(double (*func)(Vec3 *point)) {
+    double S=0;
+    for (auto & i : triangleList) {
+        double a, b, c;
+        a = func(i.getPoint1());
+        b = func(i.getPoint2());
+        c = func(i.getPoint3());
+        double A = i.area()/3;
+        S+=A*(a+b+c);
+    }
+    return S;
+}
 
-//ToDo: Integration
+double vecList<Triangle>::integrateConst(double(*func)(Vec3 *point)) {
+    double S = 0;
+    for (auto & i : triangleList) {
+        double F;
+        Vec3 O = i.getCcCentre();
+        F = func(&O);
+        double A = i.area();
+        S+=A*(F);
+    }
+    return S;
+}

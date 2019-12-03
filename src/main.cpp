@@ -1,31 +1,30 @@
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
 #include <unistd.h>
 #include "Vec3.h"
 #include "Triangle.h"
-#include "VecList.h"
 #include "Matrix.h"
-
-//ToDo: triangle.getCentre
-//ToDo: tirangle.getCcCentre
-//ToDo: trignagle.getCcRadius
-//ToDo: triangle.isWithinCc(point)
-//ToDo: triangle.area()
+#include "VecList.h"
 
 
 using namespace std;
 
 struct arguments{
-    string inputFile ="", toLocate = "";
-    bool delaunay = false;
-    int integrationType =0;
+    string inputFile, toLocate;
+    bool delaunay;
+    int integrationType;
 };
 
 void ParseArguments(int argc, char *const *argv, arguments *argumentStruct);
 void ProcessFile(vecList<Vec3> *vertices, vecList<Triangle> *triangles, const arguments& argumentStruct);
+bool isDelaunay(Triangle tri, vecList<Vec3>* points);
+int findTriangleContaining(vecList<Triangle> *triangleList, const Vec3& point);
 
 int main(int argc, char *argv[]) {
     //Parse CommandLine Arguments
     arguments arguments {};
+    arguments.delaunay = false;
     ParseArguments( argc, argv, &arguments);
 
     //Create Lists
@@ -34,16 +33,33 @@ int main(int argc, char *argv[]) {
 
     //Process File
     ProcessFile(&vertices, &triangles, arguments);
-    int i=0;
 
+    if(!arguments.toLocate.empty()){
+        double x,y,z;
+        std::istringstream iss(arguments.toLocate);
+        if (!(iss >> x >> y >> z)){ throw runtime_error("Error: Invalid x,y,z Co-ordinate");}
+        int tri = findTriangleContaining(&triangles, Vec3(x,y,z));
+        if(tri == -1){
+            cout << "point " << arguments.toLocate << " is NOT contained within a triangle within file: " << arguments.inputFile <<endl;
+        } else {
+            cout << "point " << arguments.toLocate << " is contained within triangle" <<
+                 tri << " within file: " << arguments.inputFile <<endl;
+        }
+    }
 
-    //ToDo: Locate algorithm
-    //if toLocate != ""
-        //findTriangle(x, y, z)
-
-    //ToDo: Delaunay Check
-    //if arguments.delaunay == true
-        //for tris in triangles {check isDelaunay()}
+    bool delaunayFlag = true;
+    if (arguments.delaunay){
+        for (int i = 0; i < triangles.getAllTriangles()->size(); i++) {
+            if(!isDelaunay(triangles.getTriangle(i), &vertices)){
+                delaunayFlag = false;
+            }
+        }
+        if(delaunayFlag){
+            cout<<"Given mesh: " << arguments.inputFile << " IS delaunay" <<endl;
+        } else {
+            cout<<"Given mesh: " << arguments.inputFile << " is NOT delaunay" <<endl;
+        }
+    }
 
     //ToDo: Integration
     //switch(arguments.integrationType){
@@ -51,11 +67,12 @@ int main(int argc, char *argv[]) {
             //break;
         //case 1:
             //triangles.ingegrate(1) VVV
-                // integrate( F, triangle.getCcCentre(), triangle.Area())
+                /*  Vec3 evaluateAt(Vec3 point);
+                 *  double integrateConst(vecList<Triangle> triangleList, function evaluateAt())
+                 */
             //break;
         //case 2:
-            //triangles.integrate(2) VVV
-                //
+            //double integrateLinear(vecList<Triangle> triangleList, function evaluateAt())
             //break;
         //}
 
@@ -118,13 +135,13 @@ void ProcessFile(vecList<Vec3> *vertices, vecList<Triangle> *triangles, const ar
     }
     //Get the first line of the file and process it
     getline(fileIn, line);
-    istringstream iss(line);
+    std::istringstream iss(line);
     if (!(iss >> objCount >> coordCount >> argCount)){ exit(3);}
     //Import vertices
     for (int i = 0; i < objCount; i++) {
         getline(fileIn, line);
         //line.replace(line.begin(), line.end(), ' ', '\n');
-        istringstream processStream(line);
+        std::istringstream processStream(line);
 
         vector<double> params;
         double tmp{};
@@ -143,13 +160,13 @@ void ProcessFile(vecList<Vec3> *vertices, vecList<Triangle> *triangles, const ar
     }
     int triCount, vertCount, paramCount;
     getline(fileIn, line);
-    istringstream iss2(line);
+    std::istringstream iss2(line);
     if (!(iss2 >> triCount >> vertCount >> paramCount)){ exit(4);}
 
     for (int j = 0; j < objCount; j++) {
         getline(fileIn, line);
         //line.replace(line.begin(), line.end(), ' ', '\n');
-        istringstream processStream(line);
+        std::istringstream processStream(line);
 
         vector<double> params;
         double tmp{};
@@ -168,4 +185,23 @@ void ProcessFile(vecList<Vec3> *vertices, vecList<Triangle> *triangles, const ar
         }
         params.clear();
     }
+}
+
+bool isDelaunay(Triangle tri, vecList<Vec3>* points) {
+    for (int i = 0; i < points->getAllVertices()->size(); ++i) {
+        Vec3 *point = points->getVertex(i);
+        if(tri.isWithinCc(Vec3(point->getX(), point->getY(), point->getZ()))){
+            return false;
+        }
+    }
+    return true;
+}
+
+int findTriangleContaining(vecList<Triangle> *triangleList, const Vec3& point){
+    for (int i = 0; i < triangleList->getAllTriangles()->size(); i++) {
+        if(triangleList->getTriangle(i).isWithin(point)){
+            return i;
+        }
+    }
+    return -1;
 }

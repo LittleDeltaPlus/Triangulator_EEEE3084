@@ -9,6 +9,7 @@
 #include <cmath>
 #include <fstream>
 #include "Vec3.h"
+#include "Matrix.h"
 
 /**
  * @file Triangle Class Definitions
@@ -19,7 +20,12 @@ private:
     Vec3 *point1;
     Vec3 *point2;
     Vec3 *point3;
+    Vec3 CcCentre;
+    double CcRadius;
     std::vector<double> params;
+    void calcCc();
+    static Vec3 localise(Vec3 *vector);
+
 public:
     /**
      * Default Triangle Constructor
@@ -27,7 +33,7 @@ public:
      * @param point2
      * @param point3
      */
-    Triangle() : point1(nullptr), point2(nullptr), point3(nullptr), params() {};
+    Triangle() : point1(NULL), point2(NULL), point3(NULL), params(){};
     /**
      * Triangle Constructor
      * @param point1
@@ -85,8 +91,21 @@ public:
      * @param index
      */
     void setParams(std::vector<double> parameters);
-    
-    //ToDo: bool isDelauny();
+
+    Vec3 getCcCentre();
+
+    double getCcRadius();
+
+    bool isWithinCc(const Vec3& point);
+
+    bool isWithin(Vec3 point);
+
+    double area();
+
+    static double area(Vec3 *pointa, Vec3 *pointb, Vec3 *pointc);
+
+    Vec3 centre();
+
     //ToDo: double integrate(int type);
 
     /**

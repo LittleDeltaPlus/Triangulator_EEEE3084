@@ -90,12 +90,15 @@ public:
      * @return the scalar factored matrix
      */
     Mat operator*(const double& right);
+
+    Mat operator/(const Mat& right);
+
     /**
      * inverse matrix multiplication
      * @param right
      * @return the product of LHS * RHS^-1
      */
-    Mat operator/(const Mat& right);
+    Vec3 operator*(const class Vec3 &right);
     /**
      * scalar division of a matrix
      * @param right
