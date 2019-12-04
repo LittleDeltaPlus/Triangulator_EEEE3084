@@ -59,7 +59,7 @@ public:
      * Returns ALL stored Vertices
      * @return [out] ALL Vertices
      */
-    std::vector<Vec3> getAllVertices();
+    std::vector<Vec3>* getAllVertices();
     //todo: rangefind
 };
 
@@ -75,7 +75,7 @@ public:
      * Constructor for a triangleList supplying the first Triangle
      * @param [in] triangle
      */
-    vecList(Triangle triangle);
+    explicit vecList(Triangle triangle);
     /**
      * Adds a Triangle to The list
      * @param [in] tri
@@ -108,9 +108,19 @@ public:
      * Returns [in] ALL triangles
      * @return [out] All Triangles
      */
-    std::vector<Triangle> getAllTriangles();
+    std::vector<Triangle>* getAllTriangles();
 
-    //ToDo: Delaunay
-    //ToDo: Integration
+    /**
+     * Returns the linear interpolated integral of a provided function over the area of the mesh using
+     * @param [in] func
+     * @return [out] approximation for the integral of mesh
+     */
+    double integrateLinear(double(*func)(double x, double y));
 
+    /**
+     * Returns the linear interpolated integral of a provided function over the area of the mesh using
+     * @param [in] func
+     * @return [out] approximation for the integral of mesh
+     */
+    double integrateConst(double(*func)(double x, double y));
 };

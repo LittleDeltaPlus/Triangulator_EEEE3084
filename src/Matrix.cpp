@@ -68,6 +68,12 @@ Mat Mat::operator*(const double &right) {
     return {VecA * right, VecB * right, VecC * right};
 }
 
+Vec3 Mat::operator*(const class Vec3 &right) {
+    return { (VecA.getX()*right.getX() + VecB.getX()*right.getY() + VecC.getX()*right.getZ() ),
+            (VecA.getY()*right.getX() + VecB.getY()*right.getY() + VecC.getY()*right.getZ()),
+            (VecA.getZ()*right.getX() + VecB.getZ()*right.getY() + VecC.getZ()*right.getZ())};
+}
+
 Mat Mat::operator/(const Mat &right) {
     return {*this * right.inverse()};
 }
@@ -255,8 +261,8 @@ Mat Mat::cofactor(){
 }
 
 void Mat::populate(double a, double b, double c,
-                double d, double e, double f,
-                double g, double h, double i){
+                   double d, double e, double f,
+                   double g, double h, double i){
     this->VecA.setX(a);
     this->VecB.setX(b);
     this->VecC.setX(c);

@@ -32,11 +32,11 @@ void vecList<Vec3>::insVertext(int index, Vec3 vertex) {
 }
 
 Vec3* vecList<Vec3>::getVertex(int index) {
-    return &vertexList.at(index);
+    return &vertexList[index];
 }
 
-std::vector<Vec3> vecList<Vec3>::getAllVertices() {
-    return vertexList;
+std::vector<Vec3>* vecList<Vec3>::getAllVertices() {
+    return &vertexList;
 }
 
 //ToDo: finding algorithm
@@ -71,13 +71,40 @@ void vecList<Triangle>::insTriangle(int index, Triangle tri) {
 }
 
 Triangle vecList<Triangle>::getTriangle(int index) {
-    return triangleList.at(index);
+    return triangleList[index];
 }
 
-std::vector<Triangle> vecList<Triangle>::getAllTriangles() {
-    return triangleList;
+std::vector<Triangle>* vecList<Triangle>::getAllTriangles() {
+    return &triangleList;
 }
 
-//ToDo: delaunay loop
+double vecList<Triangle>::integrateLinear(double (*func)(double x, double y)) {
+    double S=0;
+    for (int i =0; i < triangleList.size(); i++) {
+        double a, b, c;
+        //evaluate function at each point of the triangle
+        a = func(triangleList[i].getPoint1()->getX(), triangleList[i].getPoint1()->getY());
+        b = func(triangleList[i].getPoint2()->getX(), triangleList[i].getPoint2()->getY());
+        c = func(triangleList[i].getPoint3()->getX(), triangleList[i].getPoint3()->getY());
+        //find sub-triangle areas
+        double A = triangleList[i].area()/3;
+        //use linearly interpolated constant value approximation
+        S+=A*(a+b+c);
+    }
+    return S;
+}
 
-//ToDo: Integration
+double vecList<Triangle>::integrateConst(double(*func)(double x, double y)) {
+    double S = 0;
+    for (int i =0; i < triangleList.size(); i++) {
+        double F;
+        //evaulate function at the centre of the triangles circumcircle
+        Vec3 O = triangleList[i].getCcCentre();
+        F = func(O.getX(), O.getY());
+        //get the area for the triangle
+        double A = triangleList[i].area();
+        //use supplied constant value approximation
+        S+=A*(F);
+    }
+    return S;
+}

@@ -9,6 +9,7 @@
 #include <cmath>
 #include <fstream>
 #include "Vec3.h"
+#include "Matrix.h"
 
 /**
  * @file Triangle Class Definitions
@@ -19,7 +20,12 @@ private:
     Vec3 *point1;
     Vec3 *point2;
     Vec3 *point3;
+    Vec3 CcCentre;
+    double CcRadius;
     std::vector<double> params;
+    void calcCc();
+    static Vec3 localise(Vec3 *vector);
+
 public:
     /**
      * Default Triangle Constructor
@@ -27,7 +33,7 @@ public:
      * @param point2
      * @param point3
      */
-    Triangle() : point1(nullptr), point2(nullptr), point3(nullptr), params() {};
+    Triangle() : point1(NULL), point2(NULL), point3(NULL), params(){};
     /**
      * Triangle Constructor
      * @param point1
@@ -85,30 +91,76 @@ public:
      * @param index
      */
     void setParams(std::vector<double> parameters);
-    
-    //ToDo: bool isDelauny();
-    //ToDo: double integrate(int type);
 
     /**
-     * Stream output for writing vectors to a file
-     * @param ofs
-     * @param vec
-     * @return
+     * returns the centre of the triangle's circumcircle in 3d space
+     * @return circumcircle centre in 3d space
      */
-    friend std::ofstream& operator<<(std::ofstream& ofs, const Triangle& vec);
-    /**
-     * stream output for displaying vectors
-     * @param os
-     * @param vec
-     * @return
-     */
-    friend std::ostream& operator<<(std::ostream& os, const Triangle& vec);
+    Vec3 getCcCentre();
 
     /**
-     * stream input for reading in Triangle
-     * @param is
-     * @param vec
-     * @return
+     * Returns the radius of the triangle's circumcircle
+     * @return [out] circumcircle radius
      */
-    friend std::istream &operator>>(std::istream &is, Triangle &vec);
+    double getCcRadius();
+
+    /**
+     * Checks if a point is within the triangle's circumcircle
+     * @param [in] point
+     * @return [out] true if the point provided is within circumcircle
+     */
+    bool isWithinCc(const Vec3& point);
+
+    /**
+     * Checks whether a point is encapsulated by the triangle
+     * @param [in] point
+     * @return [out] true if the point provided is with the tirangle
+     */
+    bool isWithin(Vec3 point);
+
+    /**
+     * Returns the triangle's area
+     * @return [out] area
+     */
+    double area();
+
+    /**
+     * calculates the area of a triangle
+     * @param pointa
+     * @param pointb
+     * @param pointc
+     * @return [out] area
+     */
+    static double area(Vec3 *pointa, Vec3 *pointb, Vec3 *pointc);
+
+    /**
+     * Returns the co-ordinates of the centre of the triangle
+     * @return centre in 3d space
+     */
+    Vec3 centre();
+
+//ToDo: full file streaming.
+
+//    /**
+//     * Stream output for writing vectors to a file
+//     * @param ofs
+//     * @param vec
+//     * @return
+//     */
+//    friend std::ofstream& operator<<(std::ofstream& ofs, const Triangle& vec);
+//    /**
+//     * stream output for displaying vectors
+//     * @param os
+//     * @param vec
+//     * @return
+//     */
+//    friend std::ostream& operator<<(std::ostream& os, const Triangle& vec);
+//
+//    /**
+//     * stream input for reading in Triangle
+//     * @param is
+//     * @param vec
+//     * @return
+//     */
+//    friend std::istream &operator>>(std::istream &is, Triangle &vec);
 };
