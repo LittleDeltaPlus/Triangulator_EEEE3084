@@ -110,7 +110,17 @@ public:
      */
     std::vector<Triangle>* getAllTriangles();
 
-    double integrateLinear(double(*func)(Vec3 *point));
+    /**
+     * Returns the linear interpolated integral of a provided function over the area of the mesh using
+     * @param [in] func
+     * @return [out] approximation for the integral of mesh
+     */
+    double integrateLinear(double(*func)(double x, double y));
 
-    double integrateConst(double(*func)(Vec3 *point))
+    /**
+     * Returns the linear interpolated integral of a provided function over the area of the mesh using
+     * @param [in] func
+     * @return [out] approximation for the integral of mesh
+     */
+    double integrateConst(double(*func)(double x, double y));
 };

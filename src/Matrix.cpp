@@ -69,9 +69,9 @@ Mat Mat::operator*(const double &right) {
 }
 
 Vec3 Mat::operator*(const class Vec3 &right) {
-    return { (VecA.getX()*right.getX() + VecB.getX()*right.getX() + VecC.getX()*right.getX() ),
-            (VecA.getY()*right.getY() + VecB.getY()*right.getY() + VecC.getY()*right.getY()),
-            (VecA.getZ()*right.getZ() + VecB.getZ()*right.getZ() + VecC.getZ()*right.getZ())};
+    return { (VecA.getX()*right.getX() + VecB.getX()*right.getY() + VecC.getX()*right.getZ() ),
+            (VecA.getY()*right.getX() + VecB.getY()*right.getY() + VecC.getY()*right.getZ()),
+            (VecA.getZ()*right.getX() + VecB.getZ()*right.getY() + VecC.getZ()*right.getZ())};
 }
 
 Mat Mat::operator/(const Mat &right) {

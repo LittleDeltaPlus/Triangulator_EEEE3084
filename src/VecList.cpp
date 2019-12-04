@@ -78,26 +78,32 @@ std::vector<Triangle>* vecList<Triangle>::getAllTriangles() {
     return &triangleList;
 }
 
-double vecList<Triangle>::integrateLinear(double (*func)(Vec3 *point)) {
+double vecList<Triangle>::integrateLinear(double (*func)(double x, double y)) {
     double S=0;
-    for (auto & i : triangleList) {
+    for (int i =0; i < triangleList.size(); i++) {
         double a, b, c;
-        a = func(i.getPoint1());
-        b = func(i.getPoint2());
-        c = func(i.getPoint3());
-        double A = i.area()/3;
+        //evaluate function at each point of the triangle
+        a = func(triangleList[i].getPoint1()->getX(), triangleList[i].getPoint1()->getY());
+        b = func(triangleList[i].getPoint2()->getX(), triangleList[i].getPoint2()->getY());
+        c = func(triangleList[i].getPoint3()->getX(), triangleList[i].getPoint3()->getY());
+        //find sub-triangle areas
+        double A = triangleList[i].area()/3;
+        //use linearly interpolated constant value approximation
         S+=A*(a+b+c);
     }
     return S;
 }
 
-double vecList<Triangle>::integrateConst(double(*func)(Vec3 *point)) {
+double vecList<Triangle>::integrateConst(double(*func)(double x, double y)) {
     double S = 0;
-    for (auto & i : triangleList) {
+    for (int i =0; i < triangleList.size(); i++) {
         double F;
-        Vec3 O = i.getCcCentre();
-        F = func(&O);
-        double A = i.area();
+        //evaulate function at the centre of the triangles circumcircle
+        Vec3 O = triangleList[i].getCcCentre();
+        F = func(O.getX(), O.getY());
+        //get the area for the triangle
+        double A = triangleList[i].area();
+        //use supplied constant value approximation
         S+=A*(F);
     }
     return S;
