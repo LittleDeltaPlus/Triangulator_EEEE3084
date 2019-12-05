@@ -89,7 +89,7 @@ bool Triangle::isWithinCc(const Vec3& point) {
     //calculate the magnitude of OP
     double magnitude = Vec3(point - CcCentre).mag();
     //if OP.magnitude < the radius of the circumcircle the point must be within it.
-    return CcRadius >= magnitude;
+    return CcRadius > magnitude;
 }
 
 

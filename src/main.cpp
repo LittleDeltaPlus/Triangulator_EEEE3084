@@ -6,6 +6,8 @@
 #include "Triangle.h"
 #include "VecList.h"
 
+//ToDo: fout stream
+
 
 using namespace std;
 
@@ -179,7 +181,7 @@ void ProcessFile(vecList<Vec3> *vertices, vecList<Triangle> *triangles, const st
     //Get the first line of the file and process it
     getline(fileIn, line);
     std::istringstream iss(line);
-    if (!(iss >> objCount >> coordCount >> argCount)){ exit(3);}
+    if (!(iss >> objCount >> coordCount >> argCount)){ throw runtime_error("Error: Invalid File");}
     //Import vertices
     for (int i = 0; i < objCount; i++) {
         getline(fileIn, line);
@@ -206,9 +208,9 @@ void ProcessFile(vecList<Vec3> *vertices, vecList<Triangle> *triangles, const st
     int triCount, vertCount, paramCount;
     getline(fileIn, line);
     std::istringstream iss2(line);
-    if (!(iss2 >> triCount >> vertCount >> paramCount)){ exit(4);}
+    if (!(iss2 >> triCount >> vertCount >> paramCount)){ throw runtime_error("Error: Invalid File - no triangle arguments");}
 
-    for (int j = 0; j < objCount; j++) {
+    for (int j = 0; j < triCount; j++) {
         getline(fileIn, line);
         std::istringstream processStream(line);
 

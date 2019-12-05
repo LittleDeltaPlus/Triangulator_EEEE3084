@@ -78,6 +78,7 @@ std::vector<Triangle>* vecList<Triangle>::getAllTriangles() {
     return &triangleList;
 }
 
+//ToDo: move for loop internal functionality to triangle
 double vecList<Triangle>::integrateLinear(double (*func)(double x, double y)) {
     double S=0;
     for (int i =0; i < triangleList.size(); i++) {
@@ -99,8 +100,8 @@ double vecList<Triangle>::integrateConst(double(*func)(double x, double y)) {
     for (int i =0; i < triangleList.size(); i++) {
         double F;
         //evaulate function at the centre of the triangles circumcircle
-        Vec3 O = triangleList[i].getCcCentre();
         F = func(O.getX(), O.getY());
+        Vec3 O = triangleList[i].getCcCentre();
         //get the area for the triangle
         double A = triangleList[i].area();
         //use supplied constant value approximation
